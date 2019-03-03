@@ -355,7 +355,7 @@ def function1a():
 	print('ok')
 
 def function1b():
-	os.chdir('B:\\Travel\\US\\USF_Course\\EIS\\Rounds\\Round1')
+	os.chdir('B:\\Travel\\US\\USF_Course\\EIS\\Rounds\\Round')
 
 	#Buying Criteria
 	df_bc = pd.read_csv('buyingcriteria.csv')
@@ -390,20 +390,40 @@ def function1b():
 	#print(df_pa_sa.info())
 
 	#Filter dataframe by Segment
+	round_number = input("Enter the Next Round number:")
+	df_icr_round = df_icr[df_icr.Round == round_number]
+	#Traditional
 	df_pa_sa_t = df_pa_sa[df_pa_sa.Primary_Segment == 'Trad']
 	df_bc_t = df_bc[df_bc.Primary_Segment == 'Trad']
-	df_icr_round = df_icr[df_icr.Round == 5]
 	#print(df_pa_t)
 
+	#Lowend
+	df_pa_sa_l = df_pa_sa[df_pa_sa.Primary_Segment == 'Low']
+	df_bc_l = df_bc[df_bc.Primary_Segment == 'Low']
+
+	#Highend
+	df_pa_sa_h = df_pa_sa[df_pa_sa.Primary_Segment == 'High']
+	df_bc_h = df_bc[df_bc.Primary_Segment == 'High']
+
+	#Performance
+	df_pa_sa_p = df_pa_sa[df_pa_sa.Primary_Segment == 'Pfmn']
+	df_bc_p = df_bc[df_bc.Primary_Segment == 'Pfmn']
+
+	#Size
+	df_pa_sa_s = df_pa_sa[df_pa_sa.Primary_Segment == 'Size']
+	df_bc_s = df_bc[df_bc.Primary_Segment == 'Size']
+
+	#Traditional
 	#Forecast
 	demand = df_icr_round['Total_demand_t'].min()/100
 	tot_score = df_pa_sa_t.Dec_Cust_Survey.sum()
-	able_score = df_pa_sa_t[df_pa_sa_t.Name == 'Able'].Dec_Cust_Survey.sum().astype(float)
-	score_pc = able_score / tot_score
+	prod_score = df_pa_sa_t[df_pa_sa_t.Name == 'Able'].Dec_Cust_Survey.sum().astype(float)
+	score_pc = prod_score / tot_score
 	growth = 1 + (df_bc_t.Growth_Rate_Pc.min()/100)
 	forecast = (demand * score_pc * growth)
 	capacity_4_rounds = forecast * (growth ** 3)
 	#print(capacity_4_rounds)
+	
 	df_pa_sa_t['Forecast'] = 0
 	df_pa_sa_t['Capacity_4_Rounds'] = 0
 	df_pa_sa_t.loc[df_pa_sa_t['Name'] == 'Able', ['Forecast']] = forecast
@@ -417,9 +437,72 @@ def function1b():
 	#print(forecast)
 	#print(df_pa_sa_t.Forecast)
 
+	#Lowend
+	#Forecast
+	demand = df_icr_round['Total_demand_l'].min()/100
+	tot_score = df_pa_sa_l.Dec_Cust_Survey.sum()
+	prod_score = df_pa_sa_l[df_pa_sa_l.Name == 'Acre'].Dec_Cust_Survey.sum().astype(float)
+	score_pc = prod_score / tot_score
+	growth = 1 + (df_bc_l.Growth_Rate_Pc.min()/100)
+	forecast = (demand * score_pc * growth)
+	capacity_4_rounds = forecast * (growth ** 3)
+	#print(capacity_4_rounds)
+	df_pa_sa_l['Forecast'] = 0
+	df_pa_sa_l['Capacity_4_Rounds'] = 0
+	df_pa_sa_l.loc[df_pa_sa_l['Name'] == 'Acre', ['Forecast']] = forecast
+	df_pa_sa_l.loc[df_pa_sa_l['Name'] == 'Acre', ['Capacity_4_Rounds']] = capacity_4_rounds
+
+	#Highend
+	#Forecast
+	demand = df_icr_round['Total_demand_h'].min()/100
+	tot_score = df_pa_sa_h.Dec_Cust_Survey.sum()
+	prod_score = df_pa_sa_h[df_pa_sa_h.Name == 'Adam'].Dec_Cust_Survey.sum().astype(float)
+	score_pc = prod_score / tot_score
+	growth = 1 + (df_bc_h.Growth_Rate_Pc.min()/100)
+	forecast = (demand * score_pc * growth)
+	capacity_4_rounds = forecast * (growth ** 3)
+	#print(capacity_4_rounds)
+	df_pa_sa_h['Forecast'] = 0
+	df_pa_sa_h['Capacity_4_Rounds'] = 0
+	df_pa_sa_h.loc[df_pa_sa_h['Name'] == 'Adam', ['Forecast']] = forecast
+	df_pa_sa_h.loc[df_pa_sa_h['Name'] == 'Adam', ['Capacity_4_Rounds']] = capacity_4_rounds
+
+	#Performance
+	#Forecast
+	demand = df_icr_round['Total_demand_p'].min()/100
+	tot_score = df_pa_sa_p.Dec_Cust_Survey.sum()
+	prod_score = df_pa_sa_p[df_pa_sa_p.Name == 'Aft'].Dec_Cust_Survey.sum().astype(float)
+	score_pc = prod_score / tot_score
+	growth = 1 + (df_bc_p.Growth_Rate_Pc.min()/100)
+	forecast = (demand * score_pc * growth)
+	capacity_4_rounds = forecast * (growth ** 3)
+	#print(capacity_4_rounds)
+	df_pa_sa_p['Forecast'] = 0
+	df_pa_sa_p['Capacity_4_Rounds'] = 0
+	df_pa_sa_p.loc[df_pa_sa_p['Name'] == 'Aft', ['Forecast']] = forecast
+	df_pa_sa_p.loc[df_pa_sa_p['Name'] == 'Aft', ['Capacity_4_Rounds']] = capacity_4_rounds
+
+	#Size
+	#Forecast
+	demand = df_icr_round['Total_demand_s'].min()/100
+	tot_score = df_pa_sa_s.Dec_Cust_Survey.sum()
+	prod_score = df_pa_sa_s[df_pa_sa_s.Name == 'Agape'].Dec_Cust_Survey.sum().astype(float)
+	score_pc = prod_score / tot_score
+	growth = 1 + (df_bc_s.Growth_Rate_Pc.min()/100)
+	forecast = (demand * score_pc * growth)
+	capacity_4_rounds = forecast * (growth ** 3)
+	#print(capacity_4_rounds)
+	df_pa_sa_s['Forecast'] = 0
+	df_pa_sa_s['Capacity_4_Rounds'] = 0
+	df_pa_sa_s.loc[df_pa_sa_s['Name'] == 'Agape', ['Forecast']] = forecast
+	df_pa_sa_s.loc[df_pa_sa_s['Name'] == 'Agape', ['Capacity_4_Rounds']] = capacity_4_rounds
+
 	#Draw the plots
-	with PdfPages('Round1.pdf') as pdf:
-		ax = df_pa_sa_t.plot.bar(x='Name', y=['Units_Sold', 'Price', 'Pfmn_Coord_x', 'Size_Coord_x', 'Age_Dec_31_x', 'Cust_Awareness', 'Cust_Accessibility', 'Dec_Cust_Survey', 'Forecast', 'Capacity_4_Rounds'], rot=0, fontsize=5, grid=True)
+	filename = str(round_number)+'.pdf'
+	#with PdfPages('Round1.pdf') as pdf:
+	with PdfPages(filename) as pdf:
+		#Traditional
+		ax = df_pa_sa_t.plot.bar(x='Name', y=['Units_Sold', 'Price', 'Pfmn_Coord_x', 'Size_Coord_x', 'Age_Dec_31_x', 'Cust_Awareness', 'Cust_Accessibility', 'Dec_Cust_Survey', 'Forecast', 'Capacity_4_Rounds'], rot=0, fontsize=5, grid=True, width=0.7)
 		mean = df_pa_sa_t['Price'].mean()
 		age_exp = df_bc_t['Age_Exp'].max()
 		price_low = df_icr_round['Price_low_t'].min()
@@ -437,11 +520,113 @@ def function1b():
 		ax.set_title(('Traditional Segment Pos 21%, Age 47%, Price 23%, Rel 9%'), fontsize=10)
 		ax.set_yticks(np.arange(0,40, step=1))
 		ax.grid(color='g', linestyle='-', linewidth=0.5)
-		ax.legend(loc=2, prop={'size':6})
+		ax.legend(loc=1, prop={'size':6})
+		#second data frame
+		pdf.attach_note("Multiply Units Sold, Forecast and Capacity by 100, Customer Awareness, Accessibility and Dec Cust Survey Score by 10")
+
+		pdf.savefig()
+		plt.close()
+
+		#Lowend
+		ax = df_pa_sa_l.plot.bar(x='Name', y=['Units_Sold', 'Price', 'Pfmn_Coord_x', 'Size_Coord_x', 'Age_Dec_31_x', 'Cust_Awareness', 'Cust_Accessibility', 'Dec_Cust_Survey', 'Forecast', 'Capacity_4_Rounds'], rot=0, fontsize=5, grid=True, width=0.7)
+		mean = df_pa_sa_l['Price'].mean()
+		age_exp = df_bc_l['Age_Exp'].max()
+		price_low = df_icr_round['Price_low_l'].min()
+		price_high = df_icr_round['Price_high_l'].max()
+		pfmn_exp = df_icr_round['Pfmn_l'].max()
+		size_exp = df_icr_round['Size_l'].min()
+		
+	
+		ax.axhline(mean, linestyle='-', linewidth=0.5)
+		ax.axhline(age_exp, linestyle='-', linewidth=0.7, color='purple')
+		ax.axhline(price_low, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(price_high, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(pfmn_exp, linestyle='-', linewidth=0.7, color='green')
+		ax.axhline(size_exp, linestyle='-', linewidth=0.7, color='brown')
+		ax.set_title(('Lowend Segment Pos 16%, Age 24%, Price 53%, Rel 7%'), fontsize=10)
+		ax.set_yticks(np.arange(0,40, step=1))
+		ax.grid(color='g', linestyle='-', linewidth=0.5)
+		ax.legend(loc=1, prop={'size':6})
 		#second data frame
 
 		pdf.savefig()
 		plt.close()
+
+		#Highend
+		ax = df_pa_sa_h.plot.bar(x='Name', y=['Units_Sold', 'Price', 'Pfmn_Coord_x', 'Size_Coord_x', 'Age_Dec_31_x', 'Cust_Awareness', 'Cust_Accessibility', 'Dec_Cust_Survey', 'Forecast', 'Capacity_4_Rounds'], rot=0, fontsize=5, grid=True, width=0.7)
+		mean = df_pa_sa_h['Price'].mean()
+		age_exp = df_bc_h['Age_Exp'].max()
+		price_low = df_icr_round['Price_low_h'].min()
+		price_high = df_icr_round['Price_high_h'].max()
+		pfmn_exp = df_icr_round['Pfmn_h'].max()
+		size_exp = df_icr_round['Size_h'].min()
+		
+		
+		ax.axhline(mean, linestyle='-', linewidth=0.5)
+		ax.axhline(age_exp, linestyle='-', linewidth=0.7, color='purple')
+		ax.axhline(price_low, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(price_high, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(pfmn_exp, linestyle='-', linewidth=0.7, color='green')
+		ax.axhline(size_exp, linestyle='-', linewidth=0.7, color='brown')
+		ax.set_title(('Highend Segment Pos 43%, Age 29%, Price 9%, Rel 19%'), fontsize=10)
+		ax.set_yticks(np.arange(0,40, step=1))
+		ax.grid(color='g', linestyle='-', linewidth=0.5)
+		ax.legend(loc=1, prop={'size':6})
+		#second data frame
+
+		pdf.savefig()
+		plt.close()
+
+		#Performance
+		ax = df_pa_sa_p.plot.bar(x='Name', y=['Units_Sold', 'Price', 'Pfmn_Coord_x', 'Size_Coord_x', 'Age_Dec_31_x', 'Cust_Awareness', 'Cust_Accessibility', 'Dec_Cust_Survey', 'Forecast', 'Capacity_4_Rounds'], rot=0, fontsize=5, grid=True, width=0.7)
+		mean = df_pa_sa_p['Price'].mean()
+		age_exp = df_bc_p['Age_Exp'].max()
+		price_low = df_icr_round['Price_low_p'].min()
+		price_high = df_icr_round['Price_high_p'].max()
+		pfmn_exp = df_icr_round['Pfmn_p'].max()
+		size_exp = df_icr_round['Size_p'].min()
+		
+		
+		ax.axhline(mean, linestyle='-', linewidth=0.5)
+		ax.axhline(age_exp, linestyle='-', linewidth=0.7, color='purple')
+		ax.axhline(price_low, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(price_high, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(pfmn_exp, linestyle='-', linewidth=0.7, color='green')
+		ax.axhline(size_exp, linestyle='-', linewidth=0.7, color='brown')
+		ax.set_title(('Performance Segment Pos 29%, Age 9%, Price 19%, Rel 43%'), fontsize=10)
+		ax.set_yticks(np.arange(0,40, step=1))
+		ax.grid(color='g', linestyle='-', linewidth=0.5)
+		ax.legend(loc=1, prop={'size':6})
+		#second data frame
+
+		pdf.savefig()
+		plt.close()
+
+		#Size
+		ax = df_pa_sa_s.plot.bar(x='Name', y=['Units_Sold', 'Price', 'Pfmn_Coord_x', 'Size_Coord_x', 'Age_Dec_31_x', 'Cust_Awareness', 'Cust_Accessibility', 'Dec_Cust_Survey', 'Forecast', 'Capacity_4_Rounds'], rot=0, fontsize=5, grid=True, width=0.7)
+		mean = df_pa_sa_s['Price'].mean()
+		age_exp = df_bc_s['Age_Exp'].max()
+		price_low = df_icr_round['Price_low_s'].min()
+		price_high = df_icr_round['Price_high_s'].max()
+		pfmn_exp = df_icr_round['Pfmn_s'].max()
+		size_exp = df_icr_round['Size_s'].min()
+		
+		
+		ax.axhline(mean, linestyle='-', linewidth=0.5)
+		ax.axhline(age_exp, linestyle='-', linewidth=0.7, color='purple')
+		ax.axhline(price_low, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(price_high, linestyle='-', linewidth=0.7, color='orange')
+		ax.axhline(pfmn_exp, linestyle='-', linewidth=0.7, color='green')
+		ax.axhline(size_exp, linestyle='-', linewidth=0.7, color='brown')
+		ax.set_title(('Size Segment Pos 43%, Age 29%, Price 9%, Rel 19%'), fontsize=10)
+		ax.set_yticks(np.arange(0,40, step=1))
+		ax.grid(color='g', linestyle='-', linewidth=0.5)
+		ax.legend(loc=1, prop={'size':6})
+		#second data frame
+
+		pdf.savefig()
+		plt.close()
+
 
 	print('ok')
 
@@ -488,6 +673,9 @@ main()
 #Set grid width: https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.grid.html
 #Plot inputs: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html
 #size of legend: https://stackoverflow.com/questions/7125009/how-to-change-legend-size-with-matplotlib-pyplot
+#Update an element using .iloc: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.loc.html
+#Write plots to PDF https://matplotlib.org/gallery/misc/multipage_pdf.html
+#Get keyboard input: https://www.python-course.eu/python3_input.php
 
 
 
